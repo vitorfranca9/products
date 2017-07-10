@@ -24,6 +24,4 @@ This README would normally document whatever steps are necessary to get your app
 * Other guidelines
 
 ### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+vitorfranca9@gmail.com
