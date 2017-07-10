@@ -19,16 +19,16 @@ public class Image extends BaseEntity {
 
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
-	
+
 	@Lob
 	@Getter @Setter
 	private byte[] image;
-	
+
 	@ManyToOne
 	@JoinColumn(name="product_id")
 	@Getter @Setter
 	private Product product;
-	
+
 	@Override
 	public Serializable getId() {
 		return id;

@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.websocket.server.PathParam;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,28 +27,43 @@ public class ProductRestController {
 
 	@Autowired
 	ProductService productService;
-	
-//	@Produces(MediaType.APPLICATION_JSON)
+
 	@RequestMapping(value="/getAll", method=RequestMethod.GET)
 	public ResponseEntity<List<Product>> getAll() {
-		List<Product> product = productService.findAll();
-		return new ResponseEntity<List<Product>>(product, HttpStatus.OK);
+		List<Product> products = productService.findAll();
+		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
 	}
-	
-	@Consumes(MediaType.APPLICATION_JSON)
+
+	@RequestMapping(value="/getAllExcludingRelationships", method=RequestMethod.GET)
+	public ResponseEntity<List<Product>> getAllExcludingRelationships() {
+		List<Product> products = productService.findAllExcludingRelationships();
+		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+	}
+
 	@RequestMapping(value="/save", method=RequestMethod.POST)
 	public ResponseEntity<Product> save(Product product) {
 		productService.save(product);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
-//	@Consumes(MediaType.APPLICATION_JSON)
+
 	@RequestMapping(value="/delete/{id}", method=RequestMethod.DELETE)
-	public ResponseEntity<Product> delete(@PathParam("id") Long id) {
+	public ResponseEntity<Product> delete(@PathVariable("id") Long id) {
 		productService.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
+	@RequestMapping(value="/find/{id}", method=RequestMethod.GET)
+	public ResponseEntity<Product> findById(@PathVariable("id") Long id) {
+		Product product = productService.findById(id);
+		return new ResponseEntity<>(product, HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/findExcludingRelationships/{id}", method=RequestMethod.GET)
+	public ResponseEntity<Product> findByIdExcludingRelationships(@PathVariable("id") Long id) {
+		Product product = productService.findByIdExcludingRelationships(id);
+		return new ResponseEntity<>(product, HttpStatus.OK);
+	}
+
 	@RequestMapping("/opa")
 	public void opa() {
 		Product product = new Product();
@@ -92,5 +105,5 @@ public class ProductRestController {
 		
 		System.out.println("GG");
 	}
-	
+
 }

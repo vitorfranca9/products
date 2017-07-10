@@ -20,13 +20,45 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public Product findById(Long id) {
+		Product product = productRepository.findOneById(id);
+		return product;
+	}
+
+	@Override
+	public Product findByIdExcludingRelationships(Long id) {
+		Product product = productRepository.findOneById(id);
+//		Bad way
+		if (product != null) {
+//			Hibernate.initialize(p.getChildProducts());
+			product.setChildProducts(null);
+//			Hibernate.initialize(p.getImages());
+			product.setImages(null);
+		}
+		return product;
+	}
+
+	@Override
+	public List<Product> findAllExcludingRelationships() {
+		List<Product> products = productRepository.findAll();
+//		Bad way
+		for (Product p : products) {
+//			Hibernate.initialize(p.getChildProducts());
+			p.setChildProducts(null);
+//			Hibernate.initialize(p.getImages());
+			p.setImages(null);
+		}
+		return products;
+	}
+
+	@Override
 	public void save(Product product) {
 		productRepository.save(product);
 	}
-	
+
 	@Override
 	public void delete(Long id) {
 		productRepository.delete(id);
 	}
-	
+
 }
