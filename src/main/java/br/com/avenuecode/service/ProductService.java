@@ -2,20 +2,25 @@ package br.com.avenuecode.service;
 
 import java.util.List;
 
-import br.com.avenuecode.entity.Product;
+import br.com.avenuecode.entity.ImageEntity;
+import br.com.avenuecode.entity.ProductEntity;
 
 public interface ProductService {
 
-	void save(Product product);
+	void save(ProductEntity product);
 
-	List<Product> findAll();
+	List<ProductEntity> findAll();
 
 	void delete(Long id);
 
-	List<Product> findAllExcludingRelationships();
+	List<ProductEntity> findAllExcludingRelationships();
 
-	Product findById(Long id);
+	ProductEntity findById(Long id);
 
-	Product findByIdExcludingRelationships(Long id);
+	ProductEntity findByIdExcludingRelationships(Long id);
+
+	List<ProductEntity> findProductByParentProduct(ProductEntity product);
+
+	List<ImageEntity> findImagesByProduct(ProductEntity product);
 
 }

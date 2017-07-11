@@ -5,60 +5,73 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.avenuecode.entity.Product;
+import br.com.avenuecode.entity.ImageEntity;
+import br.com.avenuecode.entity.ProductEntity;
+import br.com.avenuecode.repository.ImageRepository;
 import br.com.avenuecode.repository.ProductRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
 	@Autowired
-	ProductRepository productRepository;
+	private ProductRepository productRepository;
+
+	@Autowired
+	private ImageRepository imageRepository;
 
 	@Override
-	public List<Product> findAll() {
+	public List<ProductEntity> findAll() {
 		return productRepository.findAll();
 	}
 
 	@Override
-	public Product findById(Long id) {
-		Product product = productRepository.findOneById(id);
+	public ProductEntity findById(Long id) {
+		return productRepository.findOneById(id);
+	}
+
+	@Override
+	public ProductEntity findByIdExcludingRelationships(Long id) {
+		ProductEntity product = productRepository.findOneById(id);
+		resetRelationships(product);
 		return product;
 	}
 
 	@Override
-	public Product findByIdExcludingRelationships(Long id) {
-		Product product = productRepository.findOneById(id);
-//		Bad way
-		if (product != null) {
-//			Hibernate.initialize(p.getChildProducts());
-			product.setChildProducts(null);
-//			Hibernate.initialize(p.getImages());
-			product.setImages(null);
-		}
-		return product;
-	}
-
-	@Override
-	public List<Product> findAllExcludingRelationships() {
-		List<Product> products = productRepository.findAll();
-//		Bad way
-		for (Product p : products) {
-//			Hibernate.initialize(p.getChildProducts());
-			p.setChildProducts(null);
-//			Hibernate.initialize(p.getImages());
-			p.setImages(null);
+	public List<ProductEntity> findAllExcludingRelationships() {
+		List<ProductEntity> products = productRepository.findAll();
+		for (ProductEntity p : products) {
+			resetRelationships(p);
 		}
 		return products;
 	}
 
 	@Override
-	public void save(Product product) {
+	public List<ProductEntity> findProductByParentProduct(ProductEntity product) {
+		return productRepository.findProductByParentProduct(product);
+	}
+
+	@Override
+	public List<ImageEntity> findImagesByProduct(ProductEntity product) {
+		return imageRepository.findByProduct(product);
+	}
+
+	@Override
+	public void save(ProductEntity product) {
 		productRepository.save(product);
 	}
 
 	@Override
 	public void delete(Long id) {
 		productRepository.delete(id);
+	}
+
+//	Bad way
+	private void resetRelationships(ProductEntity product) {
+		if (product != null) {
+			product.setChildProducts(null);
+			product.setImages(null);
+			product.setParentProduct(null);
+		}
 	}
 
 }

@@ -1,18 +1,15 @@
 package br.com.avenuecode.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.avenuecode.entity.Product;
+import br.com.avenuecode.entity.ProductEntity;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
-	
-	public Product findOneById(Long id);
-	
-//	@SuppressWarnings("rawtypes")
-//	public List<Product> findByImagesAndChildProducts(List images, List products);
-	
-//	public List<Product> findByImages(List images);
-	
-//	public List<Product> findByChildProducts(List products);
+public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+
+	ProductEntity findOneById(Long id);
+
+	List<ProductEntity> findProductByParentProduct(ProductEntity product);
 
 }

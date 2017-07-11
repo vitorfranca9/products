@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.avenuecode.entity.Image;
-import br.com.avenuecode.entity.Product;
+import br.com.avenuecode.entity.ImageEntity;
+import br.com.avenuecode.entity.ProductEntity;
 
-public interface ImageRepository extends JpaRepository<Image, Long> {
+public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 
-	public List<Image> findByProduct(Product product);
+	List<ImageEntity> findByProduct(ProductEntity product);
 
 }

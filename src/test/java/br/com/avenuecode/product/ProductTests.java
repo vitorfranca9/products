@@ -5,95 +5,147 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
+import org.hibernate.internal.util.collections.CollectionHelper;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.CollectionUtils;
 
-import br.com.avenuecode.entity.Image;
-import br.com.avenuecode.entity.Product;
+import br.com.avenuecode.entity.ImageEntity;
+import br.com.avenuecode.entity.ProductEntity;
+import br.com.avenuecode.service.ProductService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@FixMethodOrder(value=MethodSorters.NAME_ASCENDING)
 public class ProductTests {
 
+//	private static final String BASE_URI = "http://localhost:8080/product";
+
+	@Autowired
+	private ProductService productService;
+	
 	@Test
-	public void getAll() {
-		Client client = ClientBuilder.newClient();
-		Response response = client.target("http://localhost:8080/product/getAll/")
-			.request(MediaType.APPLICATION_JSON).get();
-		List<Product> products = response.readEntity(new GenericType<List<Product>>(){});
-		Assert.assertTrue(CollectionUtils.isEmpty(products));
-		Assert.assertEquals(HttpStatus.OK, response.getStatus());
+	public void test1SaveTest() {
+		ProductEntity product = createProductExample();
+		productService.save(product);
+		Assert.assertNotNull(product.getId());
+		Assert.assertTrue(CollectionHelper.isNotEmpty(product.getChildProducts()));
+		Assert.assertTrue(CollectionHelper.isNotEmpty(product.getImages()));
 	}
 
-	@Test @Ignore
-	public void save() {
-		Product product = new Product();
+	@Test
+	public void test2getAllTest() {
+		List<ProductEntity> products = productService.findAll();
+		Assert.assertTrue(CollectionHelper.isNotEmpty(products));
+	}
+
+	@Test
+	public void test3getAllExcludingRelationshipsTest() {
+		List<ProductEntity> products = productService.findAllExcludingRelationships();
+		Assert.assertTrue(CollectionHelper.isNotEmpty(products));
+		ProductEntity product = products.iterator().next();
+		Assert.assertNull(product.getImages());
+		Assert.assertNull(product.getChildProducts());
+		Assert.assertNull(product.getParentProduct());
+	}
+
+	@Test
+	public void test4findByIdTest() {
+		ProductEntity product = productService.findById(1L);
+		Assert.assertNotNull(product);
+		Assert.assertNotNull(product.getId());
+		Assert.assertEquals("Product Test Name", product.getName());
+	}
+
+	@Test
+	public void test5findByIdExcludingRelationshipsTest() {
+		ProductEntity product = productService.findByIdExcludingRelationships(1L);
+		Assert.assertNotNull(product);
+		Assert.assertNotNull(product.getId());
+		Assert.assertEquals("Product Test Name", product.getName());
+		Assert.assertNull(product.getChildProducts());
+		Assert.assertNull(product.getImages());
+	}
+
+	@Test
+	public void test6findProductByParentProductTest() {
+		ProductEntity parentProduct = new ProductEntity();
+		parentProduct.setId(1L);
+		List<ProductEntity> childProducts = productService.findProductByParentProduct(parentProduct);
+		Assert.assertTrue(CollectionHelper.isNotEmpty(childProducts));
+	}
+
+	@Test
+	public void test7findImagesByProductTest() {
+		ProductEntity product = new ProductEntity();
 		product.setId(1L);
-		product.setName("Product 1");
-		product.setDescription("Description 1");
-		
-		Image image = new Image();
+		List<ImageEntity> images = productService.findImagesByProduct(product);
+		Assert.assertTrue(CollectionHelper.isNotEmpty(images));
+	}
+
+	private ProductEntity createProductExample() {
+		ProductEntity product = new ProductEntity();
+		product.setName("Product Test Name");
+		product.setDescription("Product Test Description");
+		ImageEntity image = new ImageEntity();
 		image.setProduct(product);
-		fillStaticImage(image);
-		
-		product.setImages(new ArrayList<>());
-		product.getImages().add(image);
-		
-		Product productChild = new Product();
+		fillImageFromResource(image);
+		product.setImages(new ArrayList<>(Arrays.asList(image)));
+		ProductEntity productChild = new ProductEntity();
 		productChild.setName("Product Child");
 		productChild.setDescription("Product Child Desc");
-		
-		product.setChildProducts(new ArrayList<>());
-		product.getChildProducts().add(productChild);
-		
-		Client client = ClientBuilder.newClient();
-//		Response response = client.target("http://localhost:8080/product/save/")
-//			.request(MediaType.APPLICATION_JSON).post(new Requestentity product);
-		Object post = client.target("http://localhost:8080/product/save/")
-			.request(MediaType.APPLICATION_JSON).post(
-				Entity.entity(product, MediaType.APPLICATION_JSON)
-//				Entity.entity(product, MediaType.APPLICATION_JSON), new GenericType<List<Product>>(){}
-		);
-		System.out.println(post);
-		
-//		List<Product> products = response.readEntity(new GenericType<List<Product>>(){});
-//		Assert.assertTrue(CollectionUtils.isEmpty(products));
-//		Assert.assertEquals(HttpStatus.OK, response.getStatus());
+		productChild.setParentProduct(product);
+		product.setChildProducts(new ArrayList<>(Arrays.asList(productChild)));
+		return product;
 	}
 
-	private void fillStaticImage(Image image) {
+	private void fillImageFromResource(ImageEntity image) {
 		try {
 			BufferedImage bi;
 			File input = new File("src/test/resources/image002.png");
 			bi = ImageIO.read(input);
-			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write( bi, "jpg", baos );
 			baos.flush();
 			byte[] imageInByte = baos.toByteArray();
 			baos.close();
-			
 			image.setImage(imageInByte);
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+//	@Test @Ignore
+//	public void save() {
+//		ProductEntity product = createProductExample();
+//		Client client = ClientBuilder.newClient();
+//		Response response = client.target(BASE_URI+"/save").request(MediaType.APPLICATION_JSON)
+//			.post(Entity.entity(product, MediaType.APPLICATION_JSON));
+//		assertHttpStatusOk(response);
+//	}
+//	
+//	@Test @Ignore
+//	public void getAll() {
+//		Client client = ClientBuilder.newClient();
+//		Response response = client.target(BASE_URI + "/getAll")
+//			.request(MediaType.APPLICATION_JSON).get();
+//		List<ProductEntity> products = response.readEntity(new GenericType<List<ProductEntity>>(){});
+//		Assert.assertTrue(!CollectionUtils.isEmpty(products));
+//		assertHttpStatusOk(response);
+//	}
+//
+//	private void assertHttpStatusOk(Response response) {
+//		Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
+//	}
 
 }
