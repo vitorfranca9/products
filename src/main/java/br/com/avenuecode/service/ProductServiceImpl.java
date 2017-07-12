@@ -34,9 +34,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductEntity> findAllExcludingRelationships() {
 		List<ProductEntity> products = productRepository.findAll();
-		for (ProductEntity p : products) {
-			resetRelationships(p);
-		}
+		products.forEach(p -> resetRelationships(p));
 		return products;
 	}
 

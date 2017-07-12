@@ -47,7 +47,7 @@ public class ImageRestController {
 	}
 
 	@ApiOperation(value="A method that returns all images of a product based on his ID.")
-	@RequestMapping(value="images", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON, produces=MediaType.APPLICATION_JSON)
+	@RequestMapping(value="imagesByProduct", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON, produces=MediaType.APPLICATION_JSON)
 	public ResponseEntity<List<ImageEntity>> images(@RequestBody ProductEntity product) {
 		List<ImageEntity> images = imageService.findByProduct(product);
 		return new ResponseEntity<List<ImageEntity>>(images, HttpStatus.OK);

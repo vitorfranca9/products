@@ -1,4 +1,4 @@
-package br.com.avenuecode.product;
+package br.com.avenuecode.image;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
