@@ -2,7 +2,6 @@ package br.com.avenuecode.service;
 
 import java.util.List;
 
-import br.com.avenuecode.entity.ImageEntity;
 import br.com.avenuecode.entity.ProductEntity;
 
 public interface ProductService {
@@ -20,7 +19,5 @@ public interface ProductService {
 	ProductEntity findByIdExcludingRelationships(Long id);
 
 	List<ProductEntity> findProductByParentProduct(ProductEntity product);
-
-	List<ImageEntity> findImagesByProduct(ProductEntity product);
 
 }

@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.avenuecode.entity.ImageEntity;
 import br.com.avenuecode.entity.ProductEntity;
-import br.com.avenuecode.repository.ImageRepository;
 import br.com.avenuecode.repository.ProductRepository;
 
 @Service
@@ -15,9 +13,6 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepository;
-
-	@Autowired
-	private ImageRepository imageRepository;
 
 	@Override
 	public List<ProductEntity> findAll() {
@@ -48,11 +43,6 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductEntity> findProductByParentProduct(ProductEntity product) {
 		return productRepository.findProductByParentProduct(product);
-	}
-
-	@Override
-	public List<ImageEntity> findImagesByProduct(ProductEntity product) {
-		return imageRepository.findByProduct(product);
 	}
 
 	@Override

@@ -44,13 +44,13 @@ public class ProductTests {
 	}
 
 	@Test
-	public void test2getAllTest() {
+	public void test2GetAllTest() {
 		List<ProductEntity> products = productService.findAll();
 		Assert.assertTrue(CollectionHelper.isNotEmpty(products));
 	}
 
 	@Test
-	public void test3getAllExcludingRelationshipsTest() {
+	public void test3GetAllExcludingRelationshipsTest() {
 		List<ProductEntity> products = productService.findAllExcludingRelationships();
 		Assert.assertTrue(CollectionHelper.isNotEmpty(products));
 		ProductEntity product = products.iterator().next();
@@ -60,7 +60,7 @@ public class ProductTests {
 	}
 
 	@Test
-	public void test4findByIdTest() {
+	public void test4FindByIdTest() {
 		ProductEntity product = productService.findById(1L);
 		Assert.assertNotNull(product);
 		Assert.assertNotNull(product.getId());
@@ -68,7 +68,7 @@ public class ProductTests {
 	}
 
 	@Test
-	public void test5findByIdExcludingRelationshipsTest() {
+	public void test5FindByIdExcludingRelationshipsTest() {
 		ProductEntity product = productService.findByIdExcludingRelationships(1L);
 		Assert.assertNotNull(product);
 		Assert.assertNotNull(product.getId());
@@ -78,19 +78,11 @@ public class ProductTests {
 	}
 
 	@Test
-	public void test6findProductByParentProductTest() {
+	public void test6FindProductByParentProductTest() {
 		ProductEntity parentProduct = new ProductEntity();
 		parentProduct.setId(1L);
 		List<ProductEntity> childProducts = productService.findProductByParentProduct(parentProduct);
 		Assert.assertTrue(CollectionHelper.isNotEmpty(childProducts));
-	}
-
-	@Test
-	public void test7findImagesByProductTest() {
-		ProductEntity product = new ProductEntity();
-		product.setId(1L);
-		List<ImageEntity> images = productService.findImagesByProduct(product);
-		Assert.assertTrue(CollectionHelper.isNotEmpty(images));
 	}
 
 	private ProductEntity createProductExample() {

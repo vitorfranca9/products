@@ -59,14 +59,14 @@ public class ProductRestController {
 		return new ResponseEntity<List<ProductEntity>>(products, HttpStatus.OK);
 	}
 
-	@ApiOperation(value="A method that finds a product based on his ID.") 
+	@ApiOperation(value="A method that finds a product based on this ID.") 
 	@RequestMapping(value="find/{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
 	public ResponseEntity<ProductEntity> findById(@PathVariable("id") Long id) {
 		ProductEntity product = productService.findById(id);
 		return new ResponseEntity<ProductEntity>(product, HttpStatus.OK);
 	}
 
-	@ApiOperation(value="A method that finds a product based on his ID, excluding his relationships.")
+	@ApiOperation(value="A method that finds a product based on this ID, excluding his relationships.")
 	@RequestMapping(value="findExcludingRelationships/{id}", method=RequestMethod.GET)
 	public ResponseEntity<ProductEntity> findByIdExcludingRelationships(@PathVariable("id") Long id) {
 		ProductEntity product = productService.findByIdExcludingRelationships(id);
@@ -78,13 +78,6 @@ public class ProductRestController {
 	public ResponseEntity<List<ProductEntity>> childs(@RequestBody ProductEntity product) {
 		List<ProductEntity> childs = productService.findProductByParentProduct(product);
 		return new ResponseEntity<List<ProductEntity>>(childs, HttpStatus.OK);
-	}
-
-	@ApiOperation(value="A method that returns all images of a product based on his ID.")
-	@RequestMapping(value="images", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON, produces=MediaType.APPLICATION_JSON)
-	public ResponseEntity<List<ImageEntity>> images(@RequestBody ProductEntity product) {
-		List<ImageEntity> images = productService.findImagesByProduct(product);
-		return new ResponseEntity<List<ImageEntity>>(images, HttpStatus.OK);
 	}
 
 	@RequestMapping("opa")
