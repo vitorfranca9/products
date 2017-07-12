@@ -29,11 +29,9 @@ import br.com.avenuecode.service.ProductService;
 @FixMethodOrder(value=MethodSorters.NAME_ASCENDING)
 public class ProductTests {
 
-//	private static final String BASE_URI = "http://localhost:8080/product";
-
 	@Autowired
 	private ProductService productService;
-	
+
 	@Test
 	public void test1SaveTest() {
 		ProductEntity product = createProductExample();
@@ -116,28 +114,5 @@ public class ProductTests {
 			e.printStackTrace();
 		}
 	}
-
-//	@Test @Ignore
-//	public void save() {
-//		ProductEntity product = createProductExample();
-//		Client client = ClientBuilder.newClient();
-//		Response response = client.target(BASE_URI+"/save").request(MediaType.APPLICATION_JSON)
-//			.post(Entity.entity(product, MediaType.APPLICATION_JSON));
-//		assertHttpStatusOk(response);
-//	}
-//	
-//	@Test @Ignore
-//	public void getAll() {
-//		Client client = ClientBuilder.newClient();
-//		Response response = client.target(BASE_URI + "/getAll")
-//			.request(MediaType.APPLICATION_JSON).get();
-//		List<ProductEntity> products = response.readEntity(new GenericType<List<ProductEntity>>(){});
-//		Assert.assertTrue(!CollectionUtils.isEmpty(products));
-//		assertHttpStatusOk(response);
-//	}
-//
-//	private void assertHttpStatusOk(Response response) {
-//		Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
-//	}
 
 }
